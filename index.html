@@ -51,8 +51,13 @@
       font-size: 14px;
     }
 
-    #gameScreen {
-      margin-top: 30px;
+    .screen {
+      display: none;
+      padding: 20px;
+    }
+
+    .screen.active {
+      display: block;
     }
 
     #diceContainer {
@@ -66,6 +71,7 @@
       width: 80px;
       height: 80px;
       margin: 0 10px;
+      transition: transform 0.3s ease;
     }
 
     #rollButton {
@@ -82,6 +88,14 @@
       margin-top: 20px;
       font-size: 18px;
     }
+
+    .leader-card {
+      background: #222;
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 10px 0;
+    }
   </style>
 </head>
 <body>
@@ -90,7 +104,7 @@
     <span id="balance">💰 100</span>
   </div>
 
-  <div id="gameScreen">
+  <div id="gameScreen" class="screen active">
     <div id="diceContainer">
       <img id="dice1" class="dice" src="images/dice1.png" />
       <img id="dice2" class="dice" src="images/dice2.png" />
@@ -99,11 +113,20 @@
     <div id="result">Ты выбросил 3 и 2 = 5 очков!</div>
   </div>
 
+  <div id="leaderboard" class="screen">
+    <h2>🏆 Таблица лидеров</h2>
+    <div id="leaderList">
+      <div class="leader-card">🥇 @user1 — 1200 очков</div>
+      <div class="leader-card">🥈 @user2 — 1000 очков</div>
+      <div class="leader-card">🥉 @user3 — 850 очков</div>
+    </div>
+  </div>
+
   <footer>
     <button>🎁 Донат</button>
     <button>❓ Другое</button>
-    <button onclick="openScreen('mainScreen')">🏠 Главная</button>
-    <button onclick="openScreen('leaderboard')">🏆 Таблица</button>
+    <button onclick="switchScreen('gameScreen')">🏠 Главная</button>
+    <button onclick="switchScreen('leaderboard')">🏆 Таблица</button>
     <button>⚙️ Настройки</button>
   </footer>
 
@@ -114,8 +137,20 @@
       const dice1 = Math.floor(Math.random() * 6) + 1;
       const dice2 = Math.floor(Math.random() * 6) + 1;
 
-      document.getElementById('dice1').src = 'images/dice' + dice1 + '.png';
-      document.getElementById('dice2').src = 'images/dice' + dice2 + '.png';
+      const d1 = document.getElementById('dice1');
+      const d2 = document.getElementById('dice2');
+
+      d1.classList.remove('animate');
+      d2.classList.remove('animate');
+
+      void d1.offsetWidth; // trigger reflow
+      void d2.offsetWidth;
+
+      d1.src = 'images/dice' + dice1 + '.png';
+      d2.src = 'images/dice' + dice2 + '.png';
+
+      d1.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+      d2.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
 
       document.getElementById('result').textContent =
         `Ты выбросил ${dice1} и ${dice2} = ${dice1 + dice2} очков!`;
@@ -123,8 +158,9 @@
       document.getElementById('rollSound').play();
     }
 
-    function openScreen(name) {
-      console.log("Открыть экран:", name);
+    function switchScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
     }
   </script>
 </body>
