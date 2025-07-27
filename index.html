@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Игра в кубики</title>
+  <title>Retro Money Game</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
@@ -14,27 +14,55 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
+    }
+    header {
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      background-color: #1f1f1f;
+      font-size: 16px;
+    }
+    main, #diceGame, #leaderboard {
+      flex: 1;
+      display: none;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
+      padding-bottom: 80px;
     }
-    .dice-container {
+    main.active, #diceGame.active, #leaderboard.active {
       display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
     }
-    .dice {
-      width: 100px;
-      height: 100px;
-      transition: transform 0.3s;
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px;
+      background-color: #1f1f1f;
     }
-    .play-button {
-      font-size: 20px;
+    .button {
+      font-size: 18px;
       padding: 10px 20px;
+      margin-top: 20px;
       background-color: #0088cc;
       border: none;
       border-radius: 10px;
       color: white;
       cursor: pointer;
+    }
+    .dice {
+      width: 80px;
+      height: 80px;
+      margin: 0 10px;
+      transition: transform 0.3s;
+    }
+    .dice-container {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
     }
     .result {
       margin-top: 20px;
@@ -43,18 +71,52 @@
   </style>
 </head>
 <body>
-  <div class="dice-container">
-    <img id="dice1" src="images/dice1.png" class="dice" />
-    < <img id="dice2" src="images/dice1.png" class="dice" />
+  <header>
+    <div id="username">@username</div>
+    <div id="balance">💰 100</div>
+  </header>
+
+  <main class="active" id="mainScreen">
+    <button class="button" onclick="openScreen('diceGame')">🎮 Играть</button>
+  </main>
+
+  <div id="diceGame">
+    <div class="dice-container">
+      <img id="dice1" src="images/dice1.png" class="dice" />
+      <img id="dice2" src="images/dice1.png" class="dice" />
+    </div>
+    <button class="button" onclick="rollDice()">🎲 Бросить кубики</button>
+    <div class="result" id="diceResult"></div>
   </div>
-  <button class="play-button" onclick="rollDice()">🎲 Бросить кубики</button>
-  <div class="result" id="result"></div>
+
+  <div id="leaderboard">
+    <div class="button">🥇 @user1 — 1200</div>
+    <div class="button">🥈 @user2 — 950</div>
+    <div class="button">🥉 @user3 — 800</div>
+  </div>
+
+  <footer>
+    <button onclick="openScreen('leaderboard')">🏆 Таблица</button>
+    <button>🎁 Донат</button>
+    <button>⚙️ Настройки</button>
+    <button onclick="openScreen('mainScreen')">🏠 Главная</button>
+    <button>❓ Другое</button>
+  </footer>
 
   <script>
+    const tg = window.Telegram.WebApp;
+    const username = tg.initDataUnsafe?.user?.username || "Guest";
+    document.getElementById("username").textContent = "@" + username;
+
+    function openScreen(screenId) {
+      document.querySelectorAll("main, #diceGame, #leaderboard").forEach(el => el.classList.remove("active"));
+      document.getElementById(screenId).classList.add("active");
+    }
+
     function rollDice() {
       const dice1 = document.getElementById('dice1');
       const dice2 = document.getElementById('dice2');
-      const result = document.getElementById('result');
+      const result = document.getElementById('diceResult');
 
       dice1.style.transform = 'rotate(360deg)';
       dice2.style.transform = 'rotate(360deg)';
