@@ -9,9 +9,11 @@
     body {
       margin: 0;
       padding-top: 45px;
+      padding-bottom: 70px;
       font-family: sans-serif;
       background-color: #111;
       color: white;
+      text-align: center;
     }
 
     .top-bar {
@@ -49,18 +51,36 @@
       font-size: 14px;
     }
 
-    #mainScreen {
-      padding: 20px;
-      text-align: center;
+    #gameScreen {
+      margin-top: 30px;
     }
 
-    #mainScreen button {
+    #diceContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .dice {
+      width: 80px;
+      height: 80px;
+      margin: 0 10px;
+    }
+
+    #rollButton {
       font-size: 18px;
       padding: 10px 20px;
       background: #00a3e0;
       color: white;
       border: none;
       border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
     }
   </style>
 </head>
@@ -70,8 +90,13 @@
     <span id="balance">💰 100</span>
   </div>
 
-  <div id="mainScreen">
-    <button>🎮 Играть</button>
+  <div id="gameScreen">
+    <div id="diceContainer">
+      <img id="dice1" class="dice" src="images/dice1.png" />
+      <img id="dice2" class="dice" src="images/dice2.png" />
+    </div>
+    <button id="rollButton" onclick="rollDice()">🎲 Бросить кубики</button>
+    <div id="result">Ты выбросил 3 и 2 = 5 очков!</div>
   </div>
 
   <footer>
@@ -81,5 +106,26 @@
     <button onclick="openScreen('leaderboard')">🏆 Таблица</button>
     <button>⚙️ Настройки</button>
   </footer>
+
+  <audio id="rollSound" src="sounds/roll.wav" preload="auto"></audio>
+
+  <script>
+    function rollDice() {
+      const dice1 = Math.floor(Math.random() * 6) + 1;
+      const dice2 = Math.floor(Math.random() * 6) + 1;
+
+      document.getElementById('dice1').src = 'images/dice' + dice1 + '.png';
+      document.getElementById('dice2').src = 'images/dice' + dice2 + '.png';
+
+      document.getElementById('result').textContent =
+        `Ты выбросил ${dice1} и ${dice2} = ${dice1 + dice2} очков!`;
+
+      document.getElementById('rollSound').play();
+    }
+
+    function openScreen(name) {
+      console.log("Открыть экран:", name);
+    }
+  </script>
 </body>
 </html>
