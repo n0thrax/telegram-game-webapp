@@ -74,7 +74,7 @@
       transition: transform 0.3s ease;
     }
 
-    #rollButton {
+    #rollButton, .play-button {
       font-size: 18px;
       padding: 10px 20px;
       background: #00a3e0;
@@ -104,7 +104,12 @@
     <span id="balance">💰 100</span>
   </div>
 
-  <div id="gameScreen" class="screen active">
+  <div id="mainScreen" class="screen active">
+    <h2>🎮 Добро пожаловать!</h2>
+    <button class="play-button" onclick="switchScreen('gameScreen')">▶️ Играть</button>
+  </div>
+
+  <div id="gameScreen" class="screen">
     <div id="diceContainer">
       <img id="dice1" class="dice" src="images/dice1.png" />
       <img id="dice2" class="dice" src="images/dice2.png" />
@@ -125,7 +130,7 @@
   <footer>
     <button>🎁 Донат</button>
     <button>❓ Другое</button>
-    <button onclick="switchScreen('gameScreen')">🏠 Главная</button>
+    <button onclick="switchScreen('mainScreen')">🏠 Главная</button>
     <button onclick="switchScreen('leaderboard')">🏆 Таблица</button>
     <button>⚙️ Настройки</button>
   </footer>
@@ -143,7 +148,7 @@
       d1.classList.remove('animate');
       d2.classList.remove('animate');
 
-      void d1.offsetWidth; // trigger reflow
+      void d1.offsetWidth;
       void d2.offsetWidth;
 
       d1.src = 'images/dice' + dice1 + '.png';
