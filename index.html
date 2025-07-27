@@ -1,99 +1,77 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Retro Money Game</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
       margin: 0;
+      padding-top: 45px;
       font-family: sans-serif;
-      background-color: #121212;
+      background-color: #111;
       color: white;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
     }
-    header {
-      padding: 10px;
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background-color: #222;
       display: flex;
       justify-content: space-between;
-      background-color: #1f1f1f;
+      align-items: center;
+      padding: 0 12px;
+      z-index: 1000;
       font-size: 16px;
     }
-    main, #diceGame, #leaderboard {
-      flex: 1;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      padding-bottom: 80px;
-    }
-    main.active, #diceGame.active, #leaderboard.active {
-      display: flex;
-    }
+
     footer {
       position: fixed;
       bottom: 0;
       left: 0;
-      width: 100%;
+      right: 0;
+      background: #eee;
       display: flex;
       justify-content: space-around;
-      padding: 10px;
-      background-color: #1f1f1f;
+      padding: 8px 0;
+      z-index: 1000;
     }
-    .button {
+
+    footer button {
+      border: none;
+      background: white;
+      border-radius: 12px;
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+
+    #mainScreen {
+      padding: 20px;
+      text-align: center;
+    }
+
+    #mainScreen button {
       font-size: 18px;
       padding: 10px 20px;
-      margin-top: 20px;
-      background-color: #0088cc;
+      background: #00a3e0;
+      color: white;
       border: none;
       border-radius: 10px;
-      color: white;
-      cursor: pointer;
-    }
-    .dice {
-      width: 100px;
-      height: 100px;
-      margin: 0 10px;
-      transition: transform 0.3s;
-    }
-    .dice-container {
-      display: flex;
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .result {
-      margin-top: 20px;
-      font-size: 20px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div id="username">@username</div>
-    <div id="balance">💰 100</div>
-  </header>
-
-  <main class="active" id="mainScreen">
-    <button class="button" onclick="openScreen('diceGame')">🎮 Играть</button>
-  </main>
-
-  <div id="diceGame">
-    <div class="dice-container">
-      <img id="dice1" src="images/dice1.png" class="dice" />
-      <img id="dice2" src="images/dice1.png" class="dice" />
-    </div>
-    <button class="button" onclick="rollDice()">🎲 Бросить кубики</button>
-    <div class="result" id="diceResult"></div>
-    <audio id="rollSound" src="sounds/roll.mp3" preload="auto"></audio>
+  <div class="top-bar">
+    <span id="username">👤 @int0uch</span>
+    <span id="balance">💰 100</span>
   </div>
 
-  <div id="leaderboard">
-    <div class="button">🥇 @user1 — 1200</div>
-    <div class="button">🥈 @user2 — 950</div>
-    <div class="button">🥉 @user3 — 800</div>
+  <div id="mainScreen">
+    <button>🎮 Играть</button>
   </div>
 
   <footer>
@@ -103,42 +81,5 @@
     <button onclick="openScreen('leaderboard')">🏆 Таблица</button>
     <button>⚙️ Настройки</button>
   </footer>
-
-  <script>
-    const tg = window.Telegram.WebApp;
-    const username = tg.initDataUnsafe?.user?.username || "Guest";
-    document.getElementById("username").textContent = "@" + username;
-
-    function openScreen(screenId) {
-      document.querySelectorAll("main, #diceGame, #leaderboard").forEach(el => el.classList.remove("active"));
-      document.getElementById(screenId).classList.add("active");
-    }
-
-    function rollDice() {
-      const dice1 = document.getElementById('dice1');
-      const dice2 = document.getElementById('dice2');
-      const result = document.getElementById('diceResult');
-      const sound = document.getElementById('rollSound');
-
-      dice1.style.transform = 'rotate(360deg)';
-      dice2.style.transform = 'rotate(360deg)';
-      result.textContent = 'Бросаем кубики...';
-      sound.play();
-
-      setTimeout(() => {
-        const roll1 = Math.floor(Math.random() * 6) + 1;
-        const roll2 = Math.floor(Math.random() * 6) + 1;
-
-        dice1.src = `images/dice${roll1}.png`;
-        dice2.src = `images/dice${roll2}.png`;
-
-        dice1.style.transform = 'rotate(0deg)';
-        dice2.style.transform = 'rotate(0deg)';
-
-        const sum = roll1 + roll2;
-        result.textContent = `Ты выбросил ${roll1} и ${roll2} = ${sum} очков!`;
-      }, 1000);
-    }
-  </script>
 </body>
 </html>
