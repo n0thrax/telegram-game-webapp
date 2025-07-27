@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Retro Money Game</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
@@ -54,8 +54,8 @@
       cursor: pointer;
     }
     .dice {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       margin: 0 10px;
       transition: transform 0.3s;
     }
@@ -87,6 +87,7 @@
     </div>
     <button class="button" onclick="rollDice()">🎲 Бросить кубики</button>
     <div class="result" id="diceResult"></div>
+    <audio id="rollSound" src="sounds/roll.mp3" preload="auto"></audio>
   </div>
 
   <div id="leaderboard">
@@ -117,10 +118,12 @@
       const dice1 = document.getElementById('dice1');
       const dice2 = document.getElementById('dice2');
       const result = document.getElementById('diceResult');
+      const sound = document.getElementById('rollSound');
 
       dice1.style.transform = 'rotate(360deg)';
       dice2.style.transform = 'rotate(360deg)';
       result.textContent = 'Бросаем кубики...';
+      sound.play();
 
       setTimeout(() => {
         const roll1 = Math.floor(Math.random() * 6) + 1;
