@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Retro Money Game</title>
+  <title>Telegram WebApp</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
       margin: 0;
@@ -14,7 +16,6 @@
       color: white;
       text-align: center;
     }
-
     .top-bar {
       position: fixed;
       top: 0;
@@ -29,7 +30,6 @@
       z-index: 1000;
       font-size: 16px;
     }
-
     footer {
       position: fixed;
       bottom: 0;
@@ -41,7 +41,6 @@
       padding: 8px 0;
       z-index: 1000;
     }
-
     footer button {
       border: none;
       background: white;
@@ -49,30 +48,25 @@
       padding: 5px 10px;
       font-size: 14px;
     }
-
     .screen {
       display: none;
       padding: 20px;
     }
-
     .screen.active {
       display: block;
     }
-
     #diceContainer {
       display: flex;
       justify-content: center;
       align-items: center;
       margin: 20px 0;
     }
-
     .dice {
       width: 80px;
       height: 80px;
       margin: 0 10px;
       transition: transform 0.3s ease;
     }
-
     #rollButton, .play-button {
       font-size: 18px;
       padding: 10px 20px;
@@ -82,12 +76,10 @@
       border-radius: 10px;
       cursor: pointer;
     }
-
     #result {
       margin-top: 20px;
       font-size: 18px;
     }
-
     .leader-card {
       background: #222;
       color: #fff;
@@ -97,20 +89,11 @@
     }
   </style>
 </head>
-
 <body>
   <div class="top-bar">
     <span id="username">🧑‍💻 </span>
     <span id="balance">💰 100</span>
   </div>
-
-  <script>
-    const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe.user;
-    const username = user?.username || user?.first_name || "Гость";
-    document.getElementById("username").textContent += "@" + username;
-  </script>
-
 
   <div id="mainScreen" class="screen active">
     <h2>🎮 Добро пожаловать!</h2>
@@ -146,18 +129,16 @@
   <audio id="rollSound" src="sounds/roll.wav" preload="auto"></audio>
 
   <script>
+    const tg = window.Telegram.WebApp;
+    const user = tg.initDataUnsafe.user;
+    const username = user?.username || user?.first_name || "Гость";
+    document.getElementById("username").textContent += "@" + username;
+
     function rollDice() {
       const dice1 = Math.floor(Math.random() * 6) + 1;
       const dice2 = Math.floor(Math.random() * 6) + 1;
-
       const d1 = document.getElementById('dice1');
       const d2 = document.getElementById('dice2');
-
-      d1.classList.remove('animate');
-      d2.classList.remove('animate');
-
-      void d1.offsetWidth;
-      void d2.offsetWidth;
 
       d1.src = 'images/dice' + dice1 + '.png';
       d2.src = 'images/dice' + dice2 + '.png';
