@@ -3,158 +3,96 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Telegram WebApp</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Retro Money Game</title>
   <style>
-    body {
+    html, body {
+      overflow: hidden;
+      height: 100%;
       margin: 0;
-      padding-top: 45px;
-      padding-bottom: 70px;
-      font-family: sans-serif;
+      padding: 0;
       background-color: #111;
-      color: white;
-      text-align: center;
+      color: #fff;
+      font-family: sans-serif;
     }
+
     .top-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 40px;
-      background-color: #222;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 0 12px;
-      z-index: 1000;
-      font-size: 16px;
-    }
-    footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #eee;
-      display: flex;
-      justify-content: space-around;
-      padding: 8px 0;
-      z-index: 1000;
-    }
-    footer button {
-      border: none;
-      background: white;
-      border-radius: 12px;
-      padding: 5px 10px;
-      font-size: 14px;
-    }
-    .screen {
-      display: none;
-      padding: 20px;
-    }
-    .screen.active {
-      display: block;
-    }
-    #diceContainer {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 20px 0;
-    }
-    .dice {
-      width: 80px;
-      height: 80px;
-      margin: 0 10px;
-      transition: transform 0.3s ease;
-    }
-    #rollButton, .play-button {
-      font-size: 18px;
       padding: 10px 20px;
-      background: #00a3e0;
+      background-color: #222;
+    }
+
+    .screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100% - 60px);
+    }
+
+    .main-button {
+      background-color: #00aaff;
       color: white;
       border: none;
+      padding: 15px 30px;
+      font-size: 18px;
       border-radius: 10px;
       cursor: pointer;
     }
-    #result {
-      margin-top: 20px;
-      font-size: 18px;
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: #fff;
+      padding: 5px 0;
     }
-    .leader-card {
-      background: #222;
-      color: #fff;
+
+    footer button {
+      background: white;
+      border: none;
+      font-size: 14px;
+      padding: 5px;
       border-radius: 10px;
-      padding: 10px;
-      margin: 10px 0;
+      min-width: 60px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div class="top-bar">
-    <span id="username">🧑‍💻 </span>
+    <span id="username">👤 </span>
     <span id="balance">💰 100</span>
   </div>
 
-  <div id="mainScreen" class="screen active">
-    <h2>🎮 Добро пожаловать!</h2>
-    <button class="play-button" onclick="switchScreen('gameScreen')">▶️ Играть</button>
-  </div>
-
-  <div id="gameScreen" class="screen">
-    <div id="diceContainer">
-      <img id="dice1" class="dice" src="images/dice1.png" />
-      <img id="dice2" class="dice" src="images/dice2.png" />
-    </div>
-    <button id="rollButton" onclick="rollDice()">🎲 Бросить кубики</button>
-    <div id="result">Ты выбросил 3 и 2 = 5 очков!</div>
-  </div>
-
-  <div id="leaderboard" class="screen">
-    <h2>🏆 Таблица лидеров</h2>
-    <div id="leaderList">
-      <div class="leader-card">🥇 @user1 — 1200 очков</div>
-      <div class="leader-card">🥈 @user2 — 1000 очков</div>
-      <div class="leader-card">🥉 @user3 — 850 очков</div>
-    </div>
+  <div class="screen" id="mainScreen">
+    <h1>🎮 Добро пожаловать!</h1>
+    <button class="main-button" onclick="startGame()">▶️ Играть</button>
   </div>
 
   <footer>
     <button>🎁 Донат</button>
     <button>❓ Другое</button>
-    <button onclick="switchScreen('mainScreen')">🏠 Главная</button>
-    <button onclick="switchScreen('leaderboard')">🏆 Таблица</button>
+    <button onclick="openScreen('mainScreen')">🏠 Главная</button>
+    <button onclick="openScreen('leaderboard')">🏆 Таблица</button>
     <button>⚙️ Настройки</button>
   </footer>
 
-  <audio id="rollSound" src="sounds/roll.wav" preload="auto"></audio>
-
   <script>
     const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe.user;
-    const username = user?.username || user?.first_name || "Гость";
+    const user = tg.initDataUnsafe?.user || {};
+    const username = user.username || user.first_name || "Гость";
     document.getElementById("username").textContent += "@" + username;
 
-    function rollDice() {
-      const dice1 = Math.floor(Math.random() * 6) + 1;
-      const dice2 = Math.floor(Math.random() * 6) + 1;
-      const d1 = document.getElementById('dice1');
-      const d2 = document.getElementById('dice2');
-
-      d1.src = 'images/dice' + dice1 + '.png';
-      d2.src = 'images/dice' + dice2 + '.png';
-
-      d1.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
-      d2.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
-
-      document.getElementById('result').textContent =
-        `Ты выбросил ${dice1} и ${dice2} = ${dice1 + dice2} очков!`;
-
-      document.getElementById('rollSound').play();
+    function openScreen(id) {
+      document.getElementById("mainScreen").style.display = "flex";
     }
 
-    function switchScreen(screenId) {
-      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-      document.getElementById(screenId).classList.add('active');
+    function startGame() {
+      alert("Игра началась!");
     }
   </script>
 </body>
